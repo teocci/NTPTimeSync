@@ -10,6 +10,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import static com.github.teocci.ntptimesync.Utils.Config.SERVER_ADDR;
+
 /**
  * Created by teocci.
  *
@@ -40,7 +42,7 @@ public class TimeClient
             for (int i = 0; i < 10; i++) {
 
                 // Open a socket to server
-                clientSocket = new Socket(InetAddress.getByName(Util.HOST_ADDR), Util.HOST_PORT);
+                clientSocket = new Socket(InetAddress.getByName(SERVER_ADDR), Util.HOST_PORT);
 
                 // Send NTP request
                 sendNTPRequest();

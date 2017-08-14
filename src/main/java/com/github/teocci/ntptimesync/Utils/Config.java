@@ -13,4 +13,7 @@ public class Config
 
     public static String SERVER_NAME = "NTP Server";
 
+
+    public static String SERVER_ADDR = "192.168.1.130";
+
 }
