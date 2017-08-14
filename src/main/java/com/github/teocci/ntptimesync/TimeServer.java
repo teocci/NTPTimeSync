@@ -40,7 +40,6 @@ public class TimeServer
                     e.printStackTrace();
                 }
             }
-
         } catch (IOException e) {
             e.printStackTrace();
             try {
@@ -87,13 +86,13 @@ public class TimeServer
             Util.sleepThread(Util.getRandomDelay());
 
             // set T2 value
-            ntpRequest.setT2(System.currentTimeMillis() + Util.SERVER_OFFSET);
+            ntpRequest.setT2(System.nanoTime() + Util.SERVER_OFFSET);
 
             // add random delay between 10 to 100 ms - simulating processing delay (not required)
             Util.sleepThread(Util.getRandomDelay());
 
             // set T3 value
-            ntpRequest.setT3(System.currentTimeMillis() + Util.SERVER_OFFSET);
+            ntpRequest.setT3(System.nanoTime() + Util.SERVER_OFFSET);
 
             // Respond to client
             sendNTPAnswer(ntpRequest);
