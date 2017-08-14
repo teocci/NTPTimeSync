@@ -17,8 +17,4 @@ public class Config
      * Network IP address
      */
     public static final String SERVER_ADDR = "192.168.1.130";
-
-
-    public static String SERVER_ADDR = "192.168.1.130";
-
 }
