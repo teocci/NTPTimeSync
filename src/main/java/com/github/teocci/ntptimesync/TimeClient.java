@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import static com.github.teocci.ntptimesync.Utils.Config.HOST_PORT;
 import static com.github.teocci.ntptimesync.Utils.Config.SERVER_ADDR;
 
 /**
@@ -34,15 +35,15 @@ public class TimeClient
         try {
             ntpRequest = new NTPRequest();
 
-            LogHelper.e(TAG, "=========================");
+            LogHelper.e(TAG, "------------------------");
             LogHelper.e(TAG, "  Offset \t\t Delay");
-            LogHelper.e(TAG, "=========================");
+            LogHelper.e(TAG, "------------------------");
 
             // A total of 10 measurements
             for (int i = 0; i < 10; i++) {
 
                 // Open a socket to server
-                clientSocket = new Socket(InetAddress.getByName(SERVER_ADDR), Util.HOST_PORT);
+                clientSocket = new Socket(InetAddress.getByName(SERVER_ADDR), HOST_PORT);
 
                 // Send NTP request
                 sendNTPRequest();
@@ -55,7 +56,7 @@ public class TimeClient
                     minDelayNtpRequest = ntpRequest;
 
                 // wait 300ms before next iteration
-                Util.sleepThread(300);
+                Util.sleepThread(30);
             }
 
             // Calculate based on min value of d
@@ -70,22 +71,22 @@ public class TimeClient
 
     private void sendNTPRequest()
     {
-        // set T1
-        ntpRequest.setT1(System.nanoTime());
+        // set T1, which is the client's timestamp of the request packet transmission
+        ntpRequest.setT1(System.currentTimeMillis());
 
         // send request object
         try {
 
-            ObjectOutputStream oOs = new ObjectOutputStream(clientSocket.getOutputStream());
-            oOs.writeObject(ntpRequest);
+            ObjectOutputStream writer = new ObjectOutputStream(clientSocket.getOutputStream());
+            writer.writeObject(ntpRequest);
 
             // wait for server's response
-            ObjectInputStream oIs = new ObjectInputStream(clientSocket.getInputStream());
-            ntpRequest = (NTPRequest) oIs.readObject();
+            ObjectInputStream reader = new ObjectInputStream(clientSocket.getInputStream());
+            ntpRequest = (NTPRequest) reader.readObject();
 
             // Close streams
-            oOs.close();
-            oIs.close();
+            writer.close();
+            reader.close();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -94,8 +95,8 @@ public class TimeClient
         // Emulate network delay - sleep before recording time stamps
         Util.sleepThread(Util.getRandomDelay());
 
-        // set t4
-        ntpRequest.setT4((long) (System.currentTimeMillis()));
+        // set t4, which is the client's timestamp of the response packet reception
+        ntpRequest.setT4(System.currentTimeMillis());
     }
 
     public static void main(String[] args)
@@ -109,9 +110,9 @@ public class TimeClient
     private void doFinalDelayCalculation()
     {
         LogHelper.e(TAG, "------------------------");
-        LogHelper.e(TAG, "Selected time difference   : " + minDelayNtpRequest.getDelay());
-        LogHelper.e(TAG, "Corresponding clock offset : " + minDelayNtpRequest.getOffset());
-        LogHelper.e(TAG, "Corresponding accuracy   : "
+        LogHelper.e(TAG, "Selected time difference      : " + minDelayNtpRequest.getDelay());
+        LogHelper.e(TAG, "Corresponding clock offset    : " + minDelayNtpRequest.getOffset());
+        LogHelper.e(TAG, "Corresponding accuracy        : "
                 + minDelayNtpRequest.getAccuracyMin()
                 + " to "
                 + minDelayNtpRequest.getAccuracyMax());

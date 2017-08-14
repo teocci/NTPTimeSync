@@ -17,7 +17,7 @@ public class NTPRequest implements Serializable
     
     private static final long serialVersionUID = 1L;
 
-    private long t1; //time at client
+    private long t1; //time at client when client request was transmitted
     private long t2; //time at server when client request was received
     private long t3; //time at server after adding random delay
     private long t4; //time at client when server response was received

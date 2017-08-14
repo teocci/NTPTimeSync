@@ -10,6 +10,9 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import static com.github.teocci.ntptimesync.Utils.Config.HOST_PORT;
+import static com.github.teocci.ntptimesync.Utils.Config.SERVER_OFFSET;
+
 public class TimeServer
 {
     private static final String TAG = LogHelper.makeLogTag(TimeServer.class);
@@ -23,8 +26,8 @@ public class TimeServer
     public TimeServer()
     {
         try {
-            serverSocket = new ServerSocket(Util.HOST_PORT);
-            LogHelper.e(TAG, "Server started on port: " + Util.HOST_PORT);
+            serverSocket = new ServerSocket(HOST_PORT);
+            LogHelper.e(TAG, "Server started on port: " + HOST_PORT);
             LogHelper.e(TAG, "waiting for connection");
 
             // Always keep trying for new client connections
@@ -74,8 +77,8 @@ public class TimeServer
             InputStream is;
             try {
                 is = clientSocket.getInputStream();
-                ObjectInputStream oIs = new ObjectInputStream(is);
-                ntpRequest = (NTPRequest) oIs.readObject();
+                ObjectInputStream reader = new ObjectInputStream(is);
+                ntpRequest = (NTPRequest) reader.readObject();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -85,14 +88,14 @@ public class TimeServer
             // Emulate network delay - sleep before recording time stamps
             Util.sleepThread(Util.getRandomDelay());
 
-            // set T2 value
-            ntpRequest.setT2(System.nanoTime() + Util.SERVER_OFFSET);
+            // set T2, which is the server's timestamp of the request packet reception,
+            ntpRequest.setT2(System.currentTimeMillis() + SERVER_OFFSET);
 
             // add random delay between 10 to 100 ms - simulating processing delay (not required)
             Util.sleepThread(Util.getRandomDelay());
 
-            // set T3 value
-            ntpRequest.setT3(System.nanoTime() + Util.SERVER_OFFSET);
+            // set T3, which is the server's timestamp of the response packet transmission
+            ntpRequest.setT3(System.currentTimeMillis() + SERVER_OFFSET);
 
             // Respond to client
             sendNTPAnswer(ntpRequest);
@@ -102,10 +105,10 @@ public class TimeServer
         {
             // write to client socket
             try {
-                ObjectOutputStream oOs = new ObjectOutputStream(clientSocket.getOutputStream());
-                oOs.flush(); // -TODO- Flush before write?
-                oOs.writeObject(request);
-                oOs.close();
+                ObjectOutputStream writer = new ObjectOutputStream(clientSocket.getOutputStream());
+                writer.flush(); // -TODO- Flush before write?
+                writer.writeObject(request);
+                writer.close();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
