@@ -22,7 +22,7 @@ public class TimeClient
     private static final String TAG = LogHelper.makeLogTag(TimeClient.class);
 
     private Socket clientSocket;
-    private NTPRequest mNtpRequest;
+    private NTPRequest ntpRequest;
     private NTPRequest minDelayNtpRequest;    // NTP request that had min value for delay
 
 
@@ -32,10 +32,10 @@ public class TimeClient
     public TimeClient()
     {
         try {
-            mNtpRequest = new NTPRequest();
+            ntpRequest = new NTPRequest();
 
             LogHelper.e(TAG, "=========================");
-            LogHelper.e(TAG, "  o \t\t  d");
+            LogHelper.e(TAG, "  Offset \t\t Delay");
             LogHelper.e(TAG, "=========================");
 
             // A total of 10 measurements
@@ -48,11 +48,11 @@ public class TimeClient
                 sendNTPRequest();
 
                 // Do measurements
-                mNtpRequest.calculateOandD();
+                ntpRequest.calculateOandD();
 
                 // Check if this is the minimum delay NTP Request so far
-                if (minDelayNtpRequest == null || mNtpRequest.getD() < minDelayNtpRequest.getD())
-                    minDelayNtpRequest = mNtpRequest;
+                if (minDelayNtpRequest == null || ntpRequest.getDelay() < minDelayNtpRequest.getDelay())
+                    minDelayNtpRequest = ntpRequest;
 
                 // wait 300ms before next iteration
                 Util.sleepThread(300);
@@ -71,17 +71,17 @@ public class TimeClient
     private void sendNTPRequest()
     {
         // set T1
-        mNtpRequest.setT1(System.currentTimeMillis());
+        ntpRequest.setT1(System.nanoTime());
 
         // send request object
         try {
 
             ObjectOutputStream oOs = new ObjectOutputStream(clientSocket.getOutputStream());
-            oOs.writeObject(mNtpRequest);
+            oOs.writeObject(ntpRequest);
 
             // wait for server's response
             ObjectInputStream oIs = new ObjectInputStream(clientSocket.getInputStream());
-            mNtpRequest = (NTPRequest) oIs.readObject();
+            ntpRequest = (NTPRequest) oIs.readObject();
 
             // Close streams
             oOs.close();
@@ -95,7 +95,7 @@ public class TimeClient
         Util.sleepThread(Util.getRandomDelay());
 
         // set t4
-        mNtpRequest.setT4((long) (System.currentTimeMillis()));
+        ntpRequest.setT4((long) (System.currentTimeMillis()));
     }
 
     public static void main(String[] args)
@@ -109,12 +109,11 @@ public class TimeClient
     private void doFinalDelayCalculation()
     {
         LogHelper.e(TAG, "------------------------");
-        LogHelper.e(TAG, "Selected time difference   : " + minDelayNtpRequest.getD());
-        LogHelper.e(TAG, "Corresponding clock offset : " + minDelayNtpRequest.getO());
+        LogHelper.e(TAG, "Selected time difference   : " + minDelayNtpRequest.getDelay());
+        LogHelper.e(TAG, "Corresponding clock offset : " + minDelayNtpRequest.getOffset());
         LogHelper.e(TAG, "Corresponding accuracy   : "
                 + minDelayNtpRequest.getAccuracyMin()
                 + " to "
                 + minDelayNtpRequest.getAccuracyMax());
     }
-
 }

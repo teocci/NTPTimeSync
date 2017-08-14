@@ -21,8 +21,8 @@ public class NTPRequest implements Serializable
     private long t2; //time at server when client request was received
     private long t3; //time at server after adding random delay
     private long t4; //time at client when server response was received
-    private double o;
-    private double d;
+    private double offset;
+    private double delay;
 
     public NTPRequest() {}
 
@@ -66,14 +66,14 @@ public class NTPRequest implements Serializable
         this.t4 = t4;
     }
 
-    public double getD()
+    public double getDelay()
     {
-        return d;
+        return delay;
     }
 
-    public double getO()
+    public double getOffset()
     {
-        return o;
+        return offset;
     }
 
 
@@ -84,7 +84,7 @@ public class NTPRequest implements Serializable
     {
         /**
          * Delay evaluation formula :
-         * 		d = t + t’ = T(i-2) - T(i-3) + T (i) - T(i-1)
+         * 		delay = t + t’ = T(i-2) - T(i-3) + T (i) - T(i-1)
          *
          *  Our mapping is:
          *  T(i-3) -> T1
@@ -93,21 +93,21 @@ public class NTPRequest implements Serializable
          *  T(i)   -> T4
          *
          * Revised formula for our notation :
-         *  	d = T2 - T1 + T4 - T3
+         *  	delay = T2 - T1 + T4 - T3
          */
-        d = (t2 - t1) + (t4 - t3);
+        delay = (t2 - t1) + (t4 - t3);
 
         /**
          * Offset formula :
-         * 		o = 1/2 * (T(i-2) - T(i-3) + T(i-1) - T(i))
+         * 		offset = 1/2 * (T(i-2) - T(i-3) + T(i-1) - T(i))
          *
          * Revised formula for our notation :
-         * 		o = 1/2 * (T2 - T1 + T3 - T4)
+         * 		offset = 1/2 * (T2 - T1 + T3 - T4)
          */
-        o = 0.5 * (t2 - t1 + t3 - t4);
+        offset = 0.5 * (t2 - t1 + t3 - t4);
 
         // Print these values
-        LogHelper.e(TAG, o + "\t\t" + d);
+        LogHelper.e(TAG, offset + "\t\t" + delay);
     }
 
     /**
@@ -117,7 +117,7 @@ public class NTPRequest implements Serializable
      */
     public double getAccuracyMin()
     {
-        return o - (d / 2);
+        return offset - (delay / 2);
     }
 
     /**
@@ -127,6 +127,6 @@ public class NTPRequest implements Serializable
      */
     public double getAccuracyMax()
     {
-        return o + (d / 2);
+        return offset + (delay / 2);
     }
 }
