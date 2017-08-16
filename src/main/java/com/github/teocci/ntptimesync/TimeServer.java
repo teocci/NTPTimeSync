@@ -38,7 +38,6 @@ public class TimeServer
                     // Handle the incoming NTP request on a new thread
                     NTPRequestHandler ntpReqHandler = new NTPRequestHandler(incomingSocket);
                     new Thread(ntpReqHandler).start();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

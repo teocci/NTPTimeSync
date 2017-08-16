@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class NTPRequest implements Serializable
 {
     private static final String TAG = LogHelper.makeLogTag(TimeClient.class);
-    
+
     private static final long serialVersionUID = 1L;
 
     private long t1; //time at client when client request was transmitted
