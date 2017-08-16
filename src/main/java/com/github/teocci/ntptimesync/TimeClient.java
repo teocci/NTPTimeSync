@@ -35,13 +35,12 @@ public class TimeClient
         try {
             ntpRequest = new NTPRequest();
 
-            LogHelper.e(TAG, "------------------------");
-            LogHelper.e(TAG, "  Offset \t\t Delay");
-            LogHelper.e(TAG, "------------------------");
+            LogHelper.e(TAG, "------------------------------");
+            LogHelper.e(TAG, String.format("%10s\t\t%10s", "Offset", "Delay"));
+            LogHelper.e(TAG, "------------------------------");
 
             // A total of 10 measurements
             for (int i = 0; i < 10; i++) {
-
                 // Open a socket to server
                 clientSocket = new Socket(InetAddress.getByName(SERVER_ADDR), HOST_PORT);
 
@@ -49,14 +48,14 @@ public class TimeClient
                 sendNTPRequest();
 
                 // Do measurements
-                ntpRequest.calculateOandD();
+                ntpRequest.calculateOffsetAndDelay();
 
                 // Check if this is the minimum delay NTP Request so far
                 if (minDelayNtpRequest == null || ntpRequest.getDelay() < minDelayNtpRequest.getDelay())
                     minDelayNtpRequest = ntpRequest;
 
                 // wait 300ms before next iteration
-                Util.sleepThread(30);
+                Util.sleepThread(300);
             }
 
             // Calculate based on min value of d
@@ -109,7 +108,7 @@ public class TimeClient
      */
     private void doFinalDelayCalculation()
     {
-        LogHelper.e(TAG, "------------------------");
+        LogHelper.e(TAG, "------------------------------");
         LogHelper.e(TAG, "Selected time difference      : " + minDelayNtpRequest.getDelay());
         LogHelper.e(TAG, "Corresponding clock offset    : " + minDelayNtpRequest.getOffset());
         LogHelper.e(TAG, "Corresponding accuracy        : "

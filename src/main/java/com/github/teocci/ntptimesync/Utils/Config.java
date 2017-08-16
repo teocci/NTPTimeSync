@@ -31,5 +31,5 @@ public class Config
     /**
      * Induced offset between server and client clocks (client is lagging)
      */
-    public static final long SERVER_OFFSET = 80;
+    public static final long SERVER_OFFSET = 0;
 }

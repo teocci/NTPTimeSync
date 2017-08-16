@@ -26,19 +26,9 @@ public class NTPRequest implements Serializable
 
     public NTPRequest() {}
 
-    public long getT1()
-    {
-        return t1;
-    }
-
     public void setT1(long t1)
     {
         this.t1 = t1;
-    }
-
-    public long getT2()
-    {
-        return t2;
     }
 
     public void setT2(long t2)
@@ -46,24 +36,34 @@ public class NTPRequest implements Serializable
         this.t2 = t2;
     }
 
-    public long getT3()
-    {
-        return t3;
-    }
-
     public void setT3(long t3)
     {
         this.t3 = t3;
     }
 
-    public long getT4()
-    {
-        return t4;
-    }
-
     public void setT4(long t4)
     {
         this.t4 = t4;
+    }
+
+    public long getT1()
+    {
+        return t1;
+    }
+
+    public long getT2()
+    {
+        return t2;
+    }
+
+    public long getT3()
+    {
+        return t3;
+    }
+
+    public long getT4()
+    {
+        return t4;
     }
 
     public double getDelay()
@@ -78,11 +78,11 @@ public class NTPRequest implements Serializable
 
 
     /**
-     * Calculates D and O values
+     * Calculates Delay and Offset values
      */
-    public void calculateOandD()
+    public void calculateOffsetAndDelay()
     {
-        /**
+        /*
          * Delay evaluation formula :
          * 		delay = t + t’ = T(i-2) - T(i-3) + T (i) - T(i-1)
          *
@@ -97,7 +97,7 @@ public class NTPRequest implements Serializable
          */
         delay = (t2 - t1) + (t4 - t3);
 
-        /**
+        /*
          * Offset formula :
          * 		offset = 1/2 * (T(i-2) - T(i-3) + T(i-1) - T(i))
          *
@@ -107,7 +107,7 @@ public class NTPRequest implements Serializable
         offset = 0.5 * (t2 - t1 + t3 - t4);
 
         // Print these values
-        LogHelper.e(TAG, offset + "\t\t" + delay);
+        LogHelper.e(TAG, String.format("%10.2f\t\t%10.2f", offset, delay));
     }
 
     /**
