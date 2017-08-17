@@ -36,9 +36,9 @@ public class TimeClient
         try {
             ntpRequest = new NTPRequest();
 
-            LogHelper.e(TAG, "------------------------------");
+            LogHelper.e(TAG, "------------------------------------------------------------------------------------------");
             LogHelper.e(TAG, String.format("%10s\t\t%10s", "Offset", "Delay"));
-            LogHelper.e(TAG, "------------------------------");
+            LogHelper.e(TAG, "------------------------------------------------------------------------------------------");
 
             // A total of 100 measurements
             for (int i = 0; i < 100; i++) {
@@ -110,7 +110,7 @@ public class TimeClient
      */
     private void doFinalDelayCalculation()
     {
-        LogHelper.e(TAG, "------------------------------");
+        LogHelper.e(TAG, "------------------------------------------------------------------------------------------");
         LogHelper.e(TAG, String.format("Selected time difference\t\t: %10.2f", minDelayNtpRequest.getDelay()));
         LogHelper.e(TAG, String.format("Corresponding clock offset\t: %10.2f", minDelayNtpRequest.getOffset()));
         LogHelper.e(TAG, String.format("Corresponding accuracy\t\t: %10.2f to %-10.2f ",

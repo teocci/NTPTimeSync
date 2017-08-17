@@ -107,7 +107,7 @@ public class NTPRequest implements Serializable
         offset = 0.5 * (t2 - t1 + t3 - t4);
 
         // Print these values
-        LogHelper.e(TAG, String.format("%10.2f\t\t%10.2f", offset, delay));
+        LogHelper.e(TAG, String.format("%12d\t\t%12d\t\t%12d\t\t%12d\t\t%10.2f\t\t%10.2f", t1, t2, t3, t4, offset, delay));
     }
 
     /**
