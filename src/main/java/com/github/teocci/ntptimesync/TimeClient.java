@@ -71,8 +71,8 @@ public class TimeClient
     private void sendNTPRequest()
     {
         // set T1, which is the client's timestamp of the request packet transmission
-        ntpRequest.setT1(System.nanoTime());
-//        ntpRequest.setT1(System.currentTimeMillis());
+//        ntpRequest.setT1(System.nanoTime());
+        ntpRequest.setT1(System.currentTimeMillis());
 
         // send request object
         try {
@@ -96,8 +96,8 @@ public class TimeClient
         Util.sleepThread(Util.getRandomDelay());
 
         // set t4, which is the client's timestamp of the response packet reception
-        ntpRequest.setT4(System.nanoTime());
-//        ntpRequest.setT4(System.currentTimeMillis());
+//        ntpRequest.setT4(System.nanoTime());
+        ntpRequest.setT4(System.currentTimeMillis());
     }
 
     public static void main(String[] args)

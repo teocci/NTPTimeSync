@@ -88,15 +88,15 @@ public class TimeServer
             Util.sleepThread(Util.getRandomDelay());
 
             // set T2, which is the server's timestamp of the request packet reception,
-            ntpRequest.setT2(System.nanoTime() + SERVER_OFFSET);
-//            ntpRequest.setT2(System.currentTimeMillis() + SERVER_OFFSET);
+//            ntpRequest.setT2(System.nanoTime() + SERVER_OFFSET);
+            ntpRequest.setT2(System.currentTimeMillis() + SERVER_OFFSET);
 
             // add random delay between 10 to 100 ms - simulating processing delay (not required)
             Util.sleepThread(Util.getRandomDelay());
 
             // set T3, which is the server's timestamp of the response packet transmission
-            ntpRequest.setT3(System.nanoTime() + SERVER_OFFSET);
-//            ntpRequest.setT3(System.currentTimeMillis() + SERVER_OFFSET);
+//            ntpRequest.setT3(System.nanoTime() + SERVER_OFFSET);
+            ntpRequest.setT3(System.currentTimeMillis() + SERVER_OFFSET);
 
             // Respond to client
             sendNTPAnswer(ntpRequest);
