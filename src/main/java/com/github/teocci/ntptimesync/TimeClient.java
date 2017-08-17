@@ -6,6 +6,7 @@ import com.github.teocci.ntptimesync.Utils.Util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -39,8 +40,8 @@ public class TimeClient
             LogHelper.e(TAG, String.format("%10s\t\t%10s", "Offset", "Delay"));
             LogHelper.e(TAG, "------------------------------");
 
-            // A total of 10 measurements
-            for (int i = 0; i < 10; i++) {
+            // A total of 100 measurements
+            for (int i = 0; i < 100; i++) {
                 // Open a socket to server
                 clientSocket = new Socket(InetAddress.getByName(SERVER_ADDR), HOST_PORT);
 
@@ -60,8 +61,7 @@ public class TimeClient
 
             // Calculate based on min value of d
             doFinalDelayCalculation();
-
-        } catch (UnknownHostException e) {
+        } catch (ConnectException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,7 +71,8 @@ public class TimeClient
     private void sendNTPRequest()
     {
         // set T1, which is the client's timestamp of the request packet transmission
-        ntpRequest.setT1(System.currentTimeMillis());
+        ntpRequest.setT1(System.nanoTime());
+//        ntpRequest.setT1(System.currentTimeMillis());
 
         // send request object
         try {
@@ -95,7 +96,8 @@ public class TimeClient
         Util.sleepThread(Util.getRandomDelay());
 
         // set t4, which is the client's timestamp of the response packet reception
-        ntpRequest.setT4(System.currentTimeMillis());
+        ntpRequest.setT4(System.nanoTime());
+//        ntpRequest.setT4(System.currentTimeMillis());
     }
 
     public static void main(String[] args)
@@ -109,11 +111,10 @@ public class TimeClient
     private void doFinalDelayCalculation()
     {
         LogHelper.e(TAG, "------------------------------");
-        LogHelper.e(TAG, "Selected time difference      : " + minDelayNtpRequest.getDelay());
-        LogHelper.e(TAG, "Corresponding clock offset    : " + minDelayNtpRequest.getOffset());
-        LogHelper.e(TAG, "Corresponding accuracy        : "
-                + minDelayNtpRequest.getAccuracyMin()
-                + " to "
-                + minDelayNtpRequest.getAccuracyMax());
+        LogHelper.e(TAG, String.format("Selected time difference\t\t: %10.2f", minDelayNtpRequest.getDelay()));
+        LogHelper.e(TAG, String.format("Corresponding clock offset\t: %10.2f", minDelayNtpRequest.getOffset()));
+        LogHelper.e(TAG, String.format("Corresponding accuracy\t\t: %10.2f to %-10.2f ",
+                minDelayNtpRequest.getAccuracyMin(),
+                minDelayNtpRequest.getAccuracyMax()));
     }
 }
