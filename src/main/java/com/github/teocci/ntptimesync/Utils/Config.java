@@ -16,16 +16,17 @@ public class Config
     /**
      * Network IP address
      */
+//    public static final String SERVER_ADDR = "216.239.35.4";
     public static final String SERVER_ADDR = "192.168.1.130";
 
     /**
      * Network IP address
      */
-    public static String HOST_ADDR = "127.0.0.1";
-
+    public static final String HOST_ADDR = "127.0.0.1";
     /**
      * Network port
      */
+//    public static int HOST_PORT = 123;
     public static int HOST_PORT = 27780;
 
     /**
