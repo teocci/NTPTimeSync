@@ -16,6 +16,19 @@ import org.apache.commons.net.ntp.TimeStamp;
 import static com.github.teocci.ntptimesync.Utils.Config.HOST_PORT;
 
 /**
+ * This is an example program demonstrating how to use the NTPUDPClient
+ * class. This program sends a Datagram client request packet to a
+ * Network time Protocol (NTP) service port on a specified server,
+ * retrieves the time, and prints it to standard output along with
+ * the fields from the NTP message header (e.g. stratum level, reference id,
+ * poll interval, root delay, mode, ...)
+ * See <A HREF="ftp://ftp.rfc-editor.org/in-notes/rfc868.txt"> the spec </A>
+ * for details.
+ * <p>
+ * Usage: NTPClient <hostname-or-address-list>
+ * <br>
+ * Example: NTPClient clock.psu.edu
+ * <p>
  * Created by teocci.
  *
  * @author teocci@yandex.com on 2017-Aug-18
@@ -44,19 +57,19 @@ public class NTPClient
             refType = "(Secondary Reference; e.g. via NTP or SNTP)";
         }
         // stratum should be 0..15...
-        LogHelper.e(TAG," Stratum: " + stratum + " " + refType);
+        LogHelper.e(TAG, " Stratum: " + stratum + " " + refType);
         int version = message.getVersion();
         int li = message.getLeapIndicator();
-        LogHelper.e(TAG," leap=" + li + ", version="
+        LogHelper.e(TAG, " leap=" + li + ", version="
                 + version + ", precision=" + message.getPrecision());
 
-        LogHelper.e(TAG," mode: " + message.getModeName() + " (" + message.getMode() + ")");
+        LogHelper.e(TAG, " mode: " + message.getModeName() + " (" + message.getMode() + ")");
         int poll = message.getPoll();
         // poll value typically btwn MINPOLL (4) and MAXPOLL (14)
-        LogHelper.e(TAG," poll: " + (poll <= 0 ? 1 : (int) Math.pow(2, poll))
+        LogHelper.e(TAG, " poll: " + (poll <= 0 ? 1 : (int) Math.pow(2, poll))
                 + " seconds" + " (2 ** " + poll + ")");
         double disp = message.getRootDispersionInMillisDouble();
-        LogHelper.e(TAG," rootdelay=" + numberFormat.format(message.getRootDelayInMillisDouble())
+        LogHelper.e(TAG, " rootdelay=" + numberFormat.format(message.getRootDelayInMillisDouble())
                 + ", rootdispersion(ms): " + numberFormat.format(disp));
 
         int refId = message.getReferenceId();
@@ -93,7 +106,7 @@ public class NTPClient
             refAddr += " (" + refName + ")";
         }
 
-        LogHelper.e(TAG," Reference Identifier:\t" + refAddr);
+        LogHelper.e(TAG, " Reference Identifier:\t" + refAddr);
 
         TimeStamp refNtpTime = message.getReferenceTimeStamp();
 //        LogHelper.e(TAG," Reference Timestamp:\t" + refNtpTime + "  " + refNtpTime.toDateString());
@@ -116,7 +129,7 @@ public class NTPClient
 //        LogHelper.e(TAG," Destination Timestamp:\t" + destNtpTime + "  " + destNtpTime.toDateString());
 
         TimeStamp currentNtpTime = TimeStamp.getCurrentTime();
-        LogHelper.e(TAG," Current NTP Timestamp:\t" + currentNtpTime + "  " + currentNtpTime.toDateString());
+        LogHelper.e(TAG, " Current NTP Timestamp:\t" + currentNtpTime + "  " + currentNtpTime.toDateString());
 
         info.computeDetails(); // compute offset/delay if not already done
         Long offsetValue = info.getOffset();
@@ -124,7 +137,7 @@ public class NTPClient
         String delay = (delayValue == null) ? "N/A" : delayValue.toString();
         String offset = (offsetValue == null) ? "N/A" : offsetValue.toString();
 
-        LogHelper.e(TAG," Roundtrip delay(ms)=" + delay
+        LogHelper.e(TAG, " Roundtrip delay(ms)=" + delay
                 + ", clock offset(ms)=" + offset); // offset in ms
     }
 
@@ -141,10 +154,10 @@ public class NTPClient
         try {
             client.open();
             for (String arg : args) {
-                LogHelper.e(TAG,"");
+                LogHelper.e(TAG, "");
                 try {
                     InetAddress hostAddr = InetAddress.getByName(arg);
-                    LogHelper.e(TAG,"> " + hostAddr.getHostName() + "/" + hostAddr.getHostAddress());
+                    LogHelper.e(TAG, "> " + hostAddr.getHostName() + "/" + hostAddr.getHostAddress());
                     TimeInfo info = client.getTime(hostAddr, HOST_PORT);
                     processResponse(info);
                 } catch (IOException ioe) {
