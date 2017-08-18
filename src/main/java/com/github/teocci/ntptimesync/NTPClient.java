@@ -92,27 +92,31 @@ public class NTPClient
         if (refName != null && refName.length() > 1) {
             refAddr += " (" + refName + ")";
         }
+
         LogHelper.e(TAG," Reference Identifier:\t" + refAddr);
 
         TimeStamp refNtpTime = message.getReferenceTimeStamp();
-        LogHelper.e(TAG," Reference Timestamp:\t" + refNtpTime + "  " + refNtpTime.toDateString());
+//        LogHelper.e(TAG," Reference Timestamp:\t" + refNtpTime + "  " + refNtpTime.toDateString());
 
         // Originate Time is time request sent by client (t1)
         TimeStamp origNtpTime = message.getOriginateTimeStamp();
-        LogHelper.e(TAG," Originate Timestamp:\t" + origNtpTime + "  " + origNtpTime.toDateString());
+//        LogHelper.e(TAG," Originate Timestamp:\t" + origNtpTime + "  " + origNtpTime.toDateString());
 
         long destTime = info.getReturnTime();
         // Receive Time is time request received by server (t2)
         TimeStamp rcvNtpTime = message.getReceiveTimeStamp();
-        LogHelper.e(TAG," Receive Timestamp:\t" + rcvNtpTime + "  " + rcvNtpTime.toDateString());
+//        LogHelper.e(TAG," Receive Timestamp:\t" + rcvNtpTime + "  " + rcvNtpTime.toDateString());
 
         // Transmit time is time reply sent by server (t3)
         TimeStamp xmitNtpTime = message.getTransmitTimeStamp();
-        LogHelper.e(TAG," Transmit Timestamp:\t" + xmitNtpTime + "  " + xmitNtpTime.toDateString());
+//        LogHelper.e(TAG," Transmit Timestamp:\t" + xmitNtpTime + "  " + xmitNtpTime.toDateString());
 
         // Destination time is time reply received by client (t4)
         TimeStamp destNtpTime = TimeStamp.getNtpTime(destTime);
-        LogHelper.e(TAG," Destination Timestamp:\t" + destNtpTime + "  " + destNtpTime.toDateString());
+//        LogHelper.e(TAG," Destination Timestamp:\t" + destNtpTime + "  " + destNtpTime.toDateString());
+
+        TimeStamp currentNtpTime = TimeStamp.getCurrentTime();
+        LogHelper.e(TAG," Current NTP Timestamp:\t" + currentNtpTime + "  " + currentNtpTime.toDateString());
 
         info.computeDetails(); // compute offset/delay if not already done
         Long offsetValue = info.getOffset();
