@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-import static com.github.teocci.ntptimesync.Utils.Config.HOST_PORT;
+import static com.github.teocci.ntptimesync.Utils.Config.LOCAL_HOST_PORT;
 
 /**
  * The SimpleNTPServer class is a UDP implementation of a server for the
@@ -201,7 +201,7 @@ public class SimpleNTPServer implements Runnable
     public static void main(String[] args)
     {
 //        int port = NtpV3Packet.NTP_PORT;
-        int port = HOST_PORT;
+        int port = LOCAL_HOST_PORT;
 
         if (args.length != 0) {
             try {

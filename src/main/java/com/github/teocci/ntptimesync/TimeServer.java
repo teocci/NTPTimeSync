@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static com.github.teocci.ntptimesync.Utils.Config.HOST_PORT;
+import static com.github.teocci.ntptimesync.Utils.Config.LOCAL_HOST_PORT;
 import static com.github.teocci.ntptimesync.Utils.Config.SERVER_OFFSET;
 
 public class TimeServer
@@ -26,8 +26,8 @@ public class TimeServer
     public TimeServer()
     {
         try {
-            serverSocket = new ServerSocket(HOST_PORT);
-            LogHelper.e(TAG, "Server started on port: " + HOST_PORT);
+            serverSocket = new ServerSocket(LOCAL_HOST_PORT);
+            LogHelper.e(TAG, "Server started on port: " + LOCAL_HOST_PORT);
             LogHelper.e(TAG, "waiting for connection");
 
             // Always keep trying for new client connections

@@ -7,7 +7,7 @@
     <groupId>com.github.teocci</groupId>
     <artifactId>ntptimesync</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>NTPTimeSynchronizer</name>
+    <name>NTPClientSynchronizer</name>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -54,9 +54,8 @@
                         <compress />
                         <forced>true</forced>
                         <index>true</index>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                         <manifest>
-                            <mainClass>com.github.teocci.ntptimesync.TimeClient</mainClass>
+                            <mainClass>com.github.teocci.ntptimesync.NTPClient</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
@@ -74,7 +73,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>com.github.teocci.ntptimesync.TimeClient</mainClass>
+                            <mainClass>com.github.teocci.ntptimesync.NTPClient</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

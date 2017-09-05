@@ -23,12 +23,12 @@ public class Config
      * Network IP address
      */
     public static final String HOST_ADDR = "127.0.0.1";
+
     /**
      * Network port
      */
-//    public static int HOST_PORT = 123;
-    public static int HOST_PORT = 27780;
-
+    public static int LOCAL_HOST_PORT = 27780;
+    public static int BASE_HOST_PORT = 123;
     /**
      * Induced offset between server and client clocks (client is lagging)
      */

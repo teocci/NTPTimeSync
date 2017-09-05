@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.NumberFormat;
+import java.time.Clock;
 
 import com.github.teocci.ntptimesync.Utils.LogHelper;
 import org.apache.commons.net.ntp.NTPUDPClient;
@@ -13,7 +14,8 @@ import org.apache.commons.net.ntp.NtpV3Packet;
 import org.apache.commons.net.ntp.TimeInfo;
 import org.apache.commons.net.ntp.TimeStamp;
 
-import static com.github.teocci.ntptimesync.Utils.Config.HOST_PORT;
+import static com.github.teocci.ntptimesync.Utils.Config.BASE_HOST_PORT;
+import static com.github.teocci.ntptimesync.Utils.Config.LOCAL_HOST_PORT;
 
 /**
  * This is an example program demonstrating how to use the NTPUDPClient
@@ -37,7 +39,11 @@ public class NTPClient
 {
     private static final String TAG = LogHelper.makeLogTag(NTPClient.class);
 
+    public static final int MTU = 1500;
+
     private static final NumberFormat numberFormat = new java.text.DecimalFormat("0.00");
+
+    private static byte[] buffer = new byte[MTU];
 
     /**
      * Process <code>TimeInfo</code> object and print its details.
@@ -126,10 +132,18 @@ public class NTPClient
 
         // Destination time is time reply received by client (t4)
         TimeStamp destNtpTime = TimeStamp.getNtpTime(destTime);
-//        LogHelper.e(TAG," Destination Timestamp:\t" + destNtpTime + "  " + destNtpTime.toDateString());
+        LogHelper.e(TAG," Destination Timestamp:\t" + destNtpTime + "  " + destNtpTime.toDateString());
 
         TimeStamp currentNtpTime = TimeStamp.getCurrentTime();
         LogHelper.e(TAG, " Current NTP Timestamp:\t" + currentNtpTime + "  " + currentNtpTime.toDateString());
+        setLong(currentNtpTime.getSeconds(), 8, 12);
+        setLong(currentNtpTime.getFraction(), 12, 16);
+
+        LogHelper.e(TAG, " Current NTP Timestamp (seconds)\t: " + currentNtpTime.getSeconds());
+        LogHelper.e(TAG, " Current NTP Timestamp (fraction)\t: " + currentNtpTime.getFraction());
+
+        Clock.systemDefaultZone();
+        LogHelper.e(TAG, " System Default Zone: " + Clock.systemDefaultZone());
 
         info.computeDetails(); // compute offset/delay if not already done
         Long offsetValue = info.getOffset();
@@ -137,14 +151,22 @@ public class NTPClient
         String delay = (delayValue == null) ? "N/A" : delayValue.toString();
         String offset = (offsetValue == null) ? "N/A" : offsetValue.toString();
 
-        LogHelper.e(TAG, " Roundtrip delay(ms)=" + delay
-                + ", clock offset(ms)=" + offset); // offset in ms
+        LogHelper.e(TAG, " Roundtrip delay(ms) = " + delay
+                + ", clock offset(ms) = " + offset); // offset in ms
+    }
+
+    private static void setLong(long n, int begin, int end)
+    {
+        for (end--; end >= begin; end--) {
+            buffer[end] = (byte) (n % 256);
+            n >>= 8;
+        }
     }
 
     public static void main(String[] args)
     {
         if (args.length == 0) {
-            System.err.println("Usage: NTPClient <hostname-or-address-list>");
+            System.err.println("Usage: NTPClient [-local] <hostname-or-address-list>");
             System.exit(1);
         }
 
@@ -153,12 +175,17 @@ public class NTPClient
         client.setDefaultTimeout(10000);
         try {
             client.open();
+            boolean isLocal = false;
             for (String arg : args) {
+                if (arg.equals("-local")) {
+                    isLocal = true;
+                    continue;
+                }
                 LogHelper.e(TAG, "");
                 try {
                     InetAddress hostAddr = InetAddress.getByName(arg);
                     LogHelper.e(TAG, "> " + hostAddr.getHostName() + "/" + hostAddr.getHostAddress());
-                    TimeInfo info = client.getTime(hostAddr, HOST_PORT);
+                    TimeInfo info = client.getTime(hostAddr, isLocal ? LOCAL_HOST_PORT : BASE_HOST_PORT);
                     processResponse(info);
                 } catch (IOException ioe) {
                     ioe.printStackTrace();

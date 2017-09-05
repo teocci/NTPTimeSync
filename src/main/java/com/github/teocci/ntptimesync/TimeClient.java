@@ -9,9 +9,8 @@ import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
-import static com.github.teocci.ntptimesync.Utils.Config.HOST_PORT;
+import static com.github.teocci.ntptimesync.Utils.Config.LOCAL_HOST_PORT;
 import static com.github.teocci.ntptimesync.Utils.Config.SERVER_ADDR;
 
 /**
@@ -43,7 +42,7 @@ public class TimeClient
             // A total of 100 measurements
             for (int i = 0; i < 100; i++) {
                 // Open a socket to server
-                clientSocket = new Socket(InetAddress.getByName(SERVER_ADDR), HOST_PORT);
+                clientSocket = new Socket(InetAddress.getByName(SERVER_ADDR), LOCAL_HOST_PORT);
 
                 // Send NTP request
                 sendNTPRequest();
