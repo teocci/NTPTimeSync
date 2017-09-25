@@ -27,7 +27,7 @@ public class Config
     /**
      * Network port
      */
-    public static int LOCAL_HOST_PORT = 27780;
+    public static int LOCAL_HOST_PORT = 50780;
     public static int BASE_HOST_PORT = 123;
     /**
      * Induced offset between server and client clocks (client is lagging)
